@@ -9,6 +9,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Repository\LegoRepository;
+use App\Entity\LegoCollection;
+use App\Repository\LegoCollectionRepository;
 
 /* le nom de la classe doit être cohérent avec le nom du fichier */
 class LegoController extends AbstractController
@@ -18,21 +20,32 @@ class LegoController extends AbstractController
     // que l'on accède à la racine de notre site.
 
     #[Route('/', name: 'home')]
-    public function home(LegoRepository $legoRepository): Response
+    public function home(LegoRepository $legoRepository, LegoCollectionRepository $legoCollectionRepository): Response
     {
         $legos = $legoRepository->findAll();
+        $categories = $legoCollectionRepository->findAll();
         return $this->render('lego.html.twig', [
             'legos' => $legos,
+            'categories' => $categories,
         ]);
     }
 
-    #[Route('/{collection}', name: 'collection')]
-    public function collection($collection, LegoRepository $legoRepository): Response
+    #[Route('/collection/{collection}', name: 'collection')]
+    public function collection(LegoCollectionRepository $legoCollectionRepository, $collection): Response
     {
-        $legos = $legoRepository->findByCollection($collection);
+        $targetCollection = $legoCollectionRepository->find($collection);
+        $legos = $targetCollection->getLegos();
         return $this->render('lego.html.twig', [
             'legos' => $legos,
+            'categories' => $legoCollectionRepository->findAll(),
         ]);
     }
+
+    #[Route('/test/{id}', 'test')]
+    public function test(LegoCollection $collection): Response
+    {
+        dd($collection);
+    }
+
 }
 

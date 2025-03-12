@@ -6,9 +6,9 @@
 
 <nav>
     <a href="/">All</a> |
-    <a href="/Creator">Creator</a> |
-    <a href="/Star Wars">Star Wars</a> |
-    <a href="/Creator Expert">Creator Expert</a>
+    {% for category in categories %}
+        <a href="/collection/{{category.id}}">{{category.name}}</a> |
+    {% endfor %}
 </nav>
 
 <ul>
@@ -18,7 +18,7 @@
             <div class="lego_header">
               <img class="locandina" src="/images/{{lego.boxImage}}"/>
               <h1>{{lego.name}}</h1>
-              <h4>Collection : {{lego.collection}}</h4>
+              <h4>Collection : {{lego.category.name}}</h4>
               <span class="pieces">Pièces : {{lego.pieces}}</span>
               <p class="price">{{lego.price}}€</p><br>
               <a href="index.php?buy={{lego.id}}"><button>Buy</button></a>
